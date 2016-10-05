@@ -9,12 +9,18 @@ def parse(filename,delimiter=",",quote="\"")
     row = []
     field = ""
     ignore_commas = false
-    line.each_char do |char|
+    line.each_char.with_index do |char, index|
       if char == delimiter && !ignore_commas
         row << field
         field = ""
       elsif char == quote
-        ignore_commas = !ignore_commas
+        if line[index + 1] == quote
+          field << char
+        elsif line[index - 1] == quote
+          next
+        else
+          ignore_commas = !ignore_commas
+        end
       else
         field << char
       end
@@ -25,4 +31,4 @@ def parse(filename,delimiter=",",quote="\"")
   results
 end
 
-pp parse("contacts.csv",",","'")
+puts parse("routes.csv")
